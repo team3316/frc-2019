@@ -1,0 +1,10 @@
+plugins {
+    id 'application'
+}
+
+mainClassName = 'com.team3316.config.Main'
+// applicationDefaultJvmArgs = ['-Xdock:name=D-Bug Config Utility']
+
+dependencies {
+    compile group: 'com.jcraft', name: 'jsch', version: '0.1.54'
+}

@@ -1,0 +1,40 @@
+apply plugin: 'edu.wpi.first.GradleRIO'
+
+def ROBOT_MAIN_CLASS = 'com.team3316.robot.RobotEntry'
+
+deploy {
+    targets {
+        roboRIO('roborio') {
+            team = frc.getTeamNumber()
+        }
+    }
+
+    artifacts {
+        frcJavaArtifact('frcJava') {
+            targets << 'roborio'
+            debug = frc.getDebugOrDefault(false)
+        }
+
+        fileTreeArtifact('frcStaticFileDeploy') {
+            files = fileTree(dir: 'src/main/deploy')
+            targets << 'roborio'
+            directory = '/home/lvuser/deploy'
+        }
+    }
+}
+
+def includeDesktopSupport = true
+
+dependencies {
+    compile wpi.deps.wpilib()
+    compile wpi.deps.vendor.java()
+    nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
+    nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
+
+    compile 'com.github.team3316:dbug-kit:0.0.20-beta'
+}
+
+jar {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+}
